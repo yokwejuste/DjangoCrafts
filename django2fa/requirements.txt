@@ -1,0 +1,8 @@
+backports.tarfile==1.2.0
+django-two-factor-auth==1.17.0
+importlib-metadata==8.0.0
+jaraco.collections==5.1.0
+packaging==24.2
+phonenumbers==8.13.55
+platformdirs==4.2.2
+tomli==2.0.1
