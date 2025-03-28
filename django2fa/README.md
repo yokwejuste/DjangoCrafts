@@ -1,3 +1,5 @@
+![DjangoCrafts - 2FA With google authenticator](https://github.com/user-attachments/assets/bab4c18c-bccb-4e30-94f4-0f67cd775304)
+
 # Django 2FA Implementation
 
 A comprehensive Django application demonstrating two-factor authentication (2FA) implementation using `django-two-factor-auth`.
