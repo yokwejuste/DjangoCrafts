@@ -146,7 +146,7 @@ Areas where the project could be improved:
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the Creative Commons Legal Code - see the [LICENSE](../LICENSE) file for details.
 
 ## Acknowledgments
 
