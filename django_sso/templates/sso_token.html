@@ -1,0 +1,42 @@
+{% extends '_base.html' %}
+
+{% block title %}SSO Token | Django SSO{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
+    <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Your SSO Token</h1>
+        <p class="text-gray-600 mt-2">Use this token to authenticate with other applications</p>
+    </div>
+    
+    <div class="mt-8 bg-gray-100 p-4 rounded-lg">
+        <div class="flex justify-between items-center">
+            <code class="text-sm font-mono text-indigo-700 break-all">{{ token }}</code>
+            <button onclick="copyToken()" class="ml-2 p-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <div class="mt-6 text-center">
+        <a href="{% url 'home' %}" class="inline-block px-6 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 transition duration-200">
+            Back to Home
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copyToken() {
+    const tokenText = "{{ token }}";
+    navigator.clipboard.writeText(tokenText).then(function() {
+        alert('Token copied to clipboard!');
+    }, function(err) {
+        console.error('Could not copy text: ', err);
+    });
+}
+</script>
+{% endblock %}

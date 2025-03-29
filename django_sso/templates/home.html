@@ -1,0 +1,21 @@
+{% extends '_base.html' %}
+
+{% block title %}Home | Django SSO{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
+    <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Welcome, {{ user.username }}!</h1>
+        <p class="text-gray-600 mt-2">You are successfully logged in</p>
+    </div>
+    
+    <div class="mt-8">
+        <form method="post" action="{% url 'generate_sso_token' %}" class="flex justify-center">
+            {% csrf_token %}
+            <button type="submit" class="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200">
+                Generate SSO Token
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

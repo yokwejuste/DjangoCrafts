@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Django SSO{% endblock %}</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-50 flex flex-col min-h-screen">
+    <nav class="bg-indigo-600 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="text-xl font-bold">Django SSO</div>
+            <div>
+                {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="px-4 py-2 bg-indigo-700 hover:bg-indigo-800 rounded-md transition duration-200">Logout</a>
+                {% else %}
+                <a href="{% url 'login' %}" class="px-4 py-2 bg-indigo-700 hover:bg-indigo-800 rounded-md transition duration-200">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto py-8 px-4 flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-100 p-4 mt-auto">
+        <div class="container mx-auto text-center text-gray-600">
+            <p>&copy; {% now "Y" %} Django SSO. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
