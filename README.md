@@ -1,4 +1,4 @@
-# Django Crafts
+![DjangoCrafts - 2FA With google authenticator](https://github.com/user-attachments/assets/a2d49ed9-279a-41b3-8112-544564efa4fa)
 
 This repository contains various Django projects and tutorials to help you learn and implement different Django features and functionalities.
 
