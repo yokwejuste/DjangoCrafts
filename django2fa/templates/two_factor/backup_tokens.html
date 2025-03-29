@@ -1,0 +1,101 @@
+{% extends "two_factor/_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Backup Tokens" %} | Django 2FA{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+  <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <div class="px-6 py-5 border-b border-gray-200">
+      <h2 class="text-2xl font-bold text-indigo-700">{% trans "Backup Tokens" %}</h2>
+    </div>
+    
+    <div class="p-6">
+      <p class="text-gray-600 mb-6">
+        {% blocktrans trimmed %}
+          Backup tokens can be used when your primary method of two-factor authentication is unavailable. 
+          These single-use tokens should be stored securely, for example in a password manager.
+        {% endblocktrans %}
+      </p>
+      
+      {% if device.token_set.count %}
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm font-medium text-yellow-800">
+                {% blocktrans trimmed %}
+                  You have {{ tokens_left }} backup tokens remaining.
+                {% endblocktrans %}
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-gray-50 p-6 rounded-md mb-6">
+          <h3 class="text-lg font-medium text-gray-900 mb-4">{% trans "Your backup tokens:" %}</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {% for token in tokens %}
+              <div class="font-mono bg-white p-3 border rounded-md text-center">{{ token.token }}</div>
+            {% endfor %}
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-between space-x-4">
+          <a href="{% url 'two_factor:profile' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            {% trans "Back to Profile" %}
+          </a>
+          
+          <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              {% trans "Generate New Tokens" %}
+            </button>
+          </form>
+        </div>
+        
+        <div class="mt-6 p-4 border border-gray-200 rounded-md bg-gray-50">
+          <h4 class="font-medium text-gray-900 mb-2">{% trans "Important Information" %}</h4>
+          <ul class="list-disc pl-5 text-sm text-gray-600 space-y-1">
+            <li>{% trans "Each token can only be used once." %}</li>
+            <li>{% trans "Please save these tokens in a secure location." %}</li>
+            <li>{% trans "When you generate new tokens, the existing ones will be invalidated." %}</li>
+          </ul>
+        </div>
+      {% else %}
+        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm text-blue-700">
+                {% trans "You don't have any backup tokens yet." %}
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <a href="{% url 'two_factor:profile' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            {% trans "Back to Profile" %}
+          </a>
+          
+          <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              {% trans "Generate Tokens" %}
+            </button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

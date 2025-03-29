@@ -1,0 +1,184 @@
+{% extends "two_factor/_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Profile" %} | Django 2FA{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+  <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <div class="px-6 py-5 border-b border-gray-200">
+      <h2 class="text-2xl font-bold text-indigo-700">{% trans "Security Profile" %}</h2>
+    </div>
+    
+    <div class="p-6">
+      <div class="mb-8">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">{% trans "Two-Factor Authentication" %}</h3>
+        
+        {% if user.totpdevice_set.exists or user.phonedevice_set.exists or user.emaildevice_set.exists %}
+          <div class="bg-green-50 border-l-4 border-green-400 p-4 mb-6">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-green-700">
+                  {% trans "Two-factor authentication is enabled." %}
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="space-y-6">
+            {% if user.totpdevice_set.exists %}
+              <div class="border rounded-md p-4">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-medium text-gray-900">{% trans "Authenticator App" %}</h4>
+                    <p class="text-sm text-gray-500 mt-1">
+                      {% for device in user.totpdevice_set.all %}
+                        {% blocktrans trimmed with device=device.name %}
+                          Device: {{ device }}
+                        {% endblocktrans %}
+                        {% if not forloop.last %}<br>{% endif %}
+                      {% endfor %}
+                    </p>
+                  </div>
+                  <a href="{% url 'two_factor:setup' %}" class="text-sm text-indigo-600 hover:text-indigo-500">
+                    {% trans "Manage" %}
+                  </a>
+                </div>
+              </div>
+            {% endif %}
+            
+            {% if user.phonedevice_set.exists %}
+              <div class="border rounded-md p-4">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-medium text-gray-900">{% trans "Phone Number" %}</h4>
+                    <p class="text-sm text-gray-500 mt-1">
+                      {% for device in user.phonedevice_set.all %}
+                        {% blocktrans trimmed with device=device.name number=device.number %}
+                          {{ device }}: {{ number }}
+                        {% endblocktrans %}
+                        {% if not forloop.last %}<br>{% endif %}
+                      {% endfor %}
+                    </p>
+                  </div>
+                  <a href="{% url 'two_factor:phone_setup' %}" class="text-sm text-indigo-600 hover:text-indigo-500">
+                    {% trans "Manage" %}
+                  </a>
+                </div>
+              </div>
+            {% endif %}
+            
+            {% if user.emaildevice_set.exists %}
+              <div class="border rounded-md p-4">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-medium text-gray-900">{% trans "Email" %}</h4>
+                    <p class="text-sm text-gray-500 mt-1">
+                      {% for device in user.emaildevice_set.all %}
+                        {% blocktrans trimmed with device=device.name %}
+                          {{ device }}
+                        {% endblocktrans %}
+                        {% if not forloop.last %}<br>{% endif %}
+                      {% endfor %}
+                    </p>
+                  </div>
+                  <a href="{% url 'two_factor:email_setup' %}" class="text-sm text-indigo-600 hover:text-indigo-500">
+                    {% trans "Manage" %}
+                  </a>
+                </div>
+              </div>
+            {% endif %}
+            
+            {% if user.staticdevice_set.filter.exists %}
+              <div class="border rounded-md p-4">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-medium text-gray-900">{% trans "Backup Tokens" %}</h4>
+                    <p class="text-sm text-gray-500 mt-1">
+                      {% for device in user.staticdevice_set.all %}
+                        {% blocktrans trimmed with device=device.name %}
+                          {{ device }}
+                        {% endblocktrans %}: 
+                        {% blocktrans with tokens=device.token_set.count %}
+                          You have {{ tokens }} backup tokens remaining.
+                        {% endblocktrans %}
+                        {% if not forloop.last %}<br>{% endif %}
+                      {% endfor %}
+                    </p>
+                  </div>
+                  <a href="{% url 'two_factor:backup_tokens' %}" class="text-sm text-indigo-600 hover:text-indigo-500">
+                    {% trans "View" %}
+                  </a>
+                </div>
+              </div>
+            {% endif %}
+            
+            <div class="mt-4 flex justify-between">
+              <a href="{% url 'two_factor:setup' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                {% trans "Add Method" %}
+              </a>
+              
+              <a href="{% url 'two_factor:disable' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                {% trans "Disable Two-Factor Authentication" %}
+              </a>
+            </div>
+          </div>
+        {% else %}
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-yellow-700">
+                  {% trans "Two-factor authentication is not enabled yet." %}
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <p class="text-gray-600 mb-6">
+            {% blocktrans trimmed %}
+              Enhance your account security by adding a second authentication factor. This provides an additional layer of security when logging in.
+            {% endblocktrans %}
+          </p>
+          
+          <a href="{% url 'two_factor:setup' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            {% trans "Enable Two-Factor Authentication" %}
+          </a>
+        {% endif %}
+      </div>
+      
+      <div class="pt-6 border-t border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">{% trans "Account Information" %}</h3>
+        
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+          <div>
+            <dt class="text-sm font-medium text-gray-500">{% trans "Username" %}</dt>
+            <dd class="mt-1 text-sm text-gray-900">{{ user.username }}</dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">{% trans "Email" %}</dt>
+            <dd class="mt-1 text-sm text-gray-900">{{ user.email }}</dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">{% trans "Joined" %}</dt>
+            <dd class="mt-1 text-sm text-gray-900">{{ user.date_joined|date:"F j, Y" }}</dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">{% trans "Last Login" %}</dt>
+            <dd class="mt-1 text-sm text-gray-900">{{ user.last_login|date:"F j, Y" }}</dd>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

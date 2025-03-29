@@ -1,18 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>{% block title %}{% endblock %}</title>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
-  <script defer src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  {% block extra_media %}{% endblock %}
+  <title>{% block title %}Django 2FA{% endblock %}</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Additional styles -->
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+    }
+  </style>
+  
+  {% block extra_head %}{% endblock %}
 </head>
-<body>
-  {% block content_wrapper %}
-    <div class="container">
-      {% block content %}{% endblock %}
-    </div>
-  {% endblock %}
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+  <div class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-indigo-600 text-white shadow-md">
+      <div class="container mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+          <a href="/" class="text-xl font-bold">Django 2FA</a>
+          <nav>
+            <ul class="flex space-x-4">
+              {% if user.is_authenticated %}
+                <li><a href="{% url 'two_factor:profile' %}" class="hover:text-indigo-200">Profile</a></li>
+                <li><a href="{% url 'logout' %}" class="hover:text-indigo-200">Logout</a></li>
+              {% else %}
+                <li><a href="{% url 'two_factor:login' %}" class="hover:text-indigo-200">Login</a></li>
+              {% endif %}
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="flex-grow">
+      {% block content_wrapper %}
+        <div class="container mx-auto px-4 py-8">
+          {% if messages %}
+            <div class="mb-8">
+              {% for message in messages %}
+                <div class="p-4 mb-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-700{% elif message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-700{% elif message.tags == 'info' %}bg-blue-100 text-blue-700{% else %}bg-gray-100 text-gray-700{% endif %}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+          
+          {% block content %}{% endblock %}
+        </div>
+      {% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-100 border-t border-gray-200 py-4">
+      <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+        &copy; {% now "Y" %} Django 2FA Implementation
+      </div>
+    </footer>
+  </div>
+  
+  {% block extra_scripts %}{% endblock %}
 </body>
 </html>
