@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}reCAPTCHA Demo{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+        } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    {% block extra_head %}{% endblock %}
+    <style type="text/tailwindcss">
+        @layer components {
+            .btn-primary {
+                @apply bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-md hover:from-blue-600 hover:to-indigo-700 focus:outline-none transform transition duration-300 hover:scale-105 hover:shadow-lg;
+            }
+            .card {
+                @apply bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300;
+            }
+            .page-container {
+                @apply min-h-screen bg-gradient-to-b from-gray-50 to-gray-200 dark:from-gray-900 dark:to-gray-800 flex flex-col;
+            }
+            .content-container {
+                @apply container mx-auto px-4 py-10 flex-grow;
+            }
+            .form-input {
+                @apply mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-700 focus:ring-opacity-50 transition-colors duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100;
+            }
+            input[type="text"], input[type="email"], textarea {
+                @apply form-input;
+            }
+            textarea {
+                @apply h-32 resize-y;
+            }
+            .page-title {
+                @apply text-3xl font-bold text-center mb-8 text-gray-800 dark:text-gray-200 relative;
+            }
+            .page-title:after {
+                content: '';
+                @apply absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full;
+            }
+            .form-group {
+                @apply mb-4;
+            }
+            .error-alert {
+                @apply bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/30 dark:to-red-800/30 px-4 py-3 rounded-md border-l-4 border-red-500 mb-6 flex items-start w-full z-10 relative;
+            }
+            .hidden-error {
+                display: none !important;
+            }
+            .error-icon {
+                @apply text-red-500 dark:text-red-400 mr-3 mt-0.5 flex-shrink-0;
+            }
+            .error-content {
+                @apply flex-1;
+            }
+            .error-title {
+                @apply text-red-800 dark:text-red-300 font-medium text-sm;
+            }
+            .error-message {
+                @apply text-red-700 dark:text-red-400 text-sm mt-1;
+            }
+            .error-close {
+                @apply text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 ml-2 cursor-pointer transition-colors duration-200;
+            }
+            .theme-toggle {
+                @apply inline-flex items-center p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 cursor-pointer;
+            }
+            label {
+                @apply text-gray-700 dark:text-gray-300;
+            }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+
+<body class="page-container">
+    <nav class="bg-white dark:bg-gray-800 shadow-md">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="text-xl font-bold text-indigo-600 dark:text-indigo-400">
+                    <a href="{% url 'home' %}">reCAPTCHA Demo</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'home' %}" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-300">Home</a>
+                    <a href="{% url 'contact' %}" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-300">v2 Checkbox</a>
+                    <a href="{% url 'invisible' %}" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-300">v2 Invisible</a>
+                    <a href="{% url 'v3' %}" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-300">v3 Captcha</a>
+                    <a href="{% url 'django_captcha' %}" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-300">Simple Captcha</a>
+                    <div class="theme-switcher flex items-center space-x-3 ml-4 border-l pl-4 border-gray-200 dark:border-gray-700">
+                        <button id="theme-toggle-light" class="theme-toggle" title="Light mode">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </button>
+                        <button id="theme-toggle-dark" class="theme-toggle" title="Dark mode">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                        </button>
+                        <button id="theme-toggle-system" class="theme-toggle" title="System preference">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-container">
+        <h1 class="page-title">{% block page_title %}reCAPTCHA Demo{% endblock %}</h1>
+        
+        <div class="max-w-2xl mx-auto">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 dark:bg-gray-900 text-white py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p>© 2025 reCAPTCHA Demo. Built with Django and Tailwind CSS.</p>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateActiveToggle() {
+                const isSystemPreference = !('theme' in localStorage);
+                const isDarkMode = document.documentElement.classList.contains('dark');
+                
+                document.querySelectorAll('.theme-toggle').forEach(button => {
+                    button.classList.remove('bg-gray-200', 'dark:bg-gray-700');
+                });
+                
+                if (isSystemPreference) {
+                    document.getElementById('theme-toggle-system').classList.add('bg-gray-200', 'dark:bg-gray-700');
+                } else if (isDarkMode) {
+                    document.getElementById('theme-toggle-dark').classList.add('bg-gray-200', 'dark:bg-gray-700');
+                } else {
+                    document.getElementById('theme-toggle-light').classList.add('bg-gray-200', 'dark:bg-gray-700');
+                }
+            }
+            // Initial setup
+            updateActiveToggle();
+            
+            document.getElementById('theme-toggle-light').addEventListener('click', function() {
+                localStorage.theme = 'light';
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                updateActiveToggle();
+            });
+            
+            document.getElementById('theme-toggle-dark').addEventListener('click', function() {
+                localStorage.theme = 'dark';
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+                updateActiveToggle();
+            });
+            
+            document.getElementById('theme-toggle-system').addEventListener('click', function() {
+                localStorage.removeItem('theme');
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.classList.remove('light');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.classList.add('light');
+                }
+                updateActiveToggle();
+            });
+            
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+                if (!('theme' in localStorage)) {
+                    if (event.matches) {
+                        document.documentElement.classList.add('dark');
+                        document.documentElement.classList.remove('light');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        document.documentElement.classList.add('light');
+                    }
+                    updateActiveToggle();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

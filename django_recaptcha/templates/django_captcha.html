@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}Django Simple Captcha - reCAPTCHA Demo{% endblock %}
+
+{% block page_title %}Django Simple Captcha{% endblock %}
+
+{% block content %}
+<div id="recaptcha-error" class="error-alert hidden-error">
+    <div class="error-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+        </svg>
+    </div>
+    <div class="error-content">
+        <div class="error-title">Captcha Error</div>
+        <div id="recaptcha-error-message" class="error-message">An error occurred with the captcha verification.</div>
+    </div>
+    <div class="error-close" onclick="closeError()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+    </div>
+</div>
+
+<form method="post" class="card md:p-8 p-4" id="captchaForm">
+    {% csrf_token %}
+    <div class="space-y-6">
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ field.label }}</label>
+                {% if field.name == 'captcha' %}
+                    <div class="captcha-field w-full flex flex-col items-center md:items-start">
+                        {{ field }}
+                        <div class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                            <span>Can't read the text? </span>
+                            <button type="button" id="refresh-captcha" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300">
+                                Click to refresh
+                            </button>
+                            <span> or </span>
+                            <a href="#" id="play-audio" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300">
+                                listen to audio
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    {{ field }}
+                {% endif %}
+                {% if field.errors %}
+                    <span class="text-red-500 text-sm mt-1 block">{{ field.errors }}</span>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="mt-8 flex justify-center md:justify-start">
+        <button type="submit" class="btn-primary w-full md:w-auto">Submit</button>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function closeError() {
+        document.getElementById('recaptcha-error').classList.add('hidden-error');
+    }
+
+    function showCaptchaError(message) {
+        const errorElement = document.getElementById('recaptcha-error');
+        const messageElement = document.getElementById('recaptcha-error-message');
+        
+        messageElement.textContent = message || 'An error occurred with the captcha verification.';
+        errorElement.classList.remove('hidden-error');
+        
+        setTimeout(function() {
+            errorElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const captchaImg = document.querySelector('.captcha');
+        let captchaKey = "";
+        
+        if (captchaImg) {
+            captchaKey = captchaImg.src.split('/').pop().split('.')[0];
+            
+            const refreshCaptcha = function(e) {
+                if(e) e.preventDefault();
+                
+                fetch('/captcha/refresh/', {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    captchaImg.src = data.image_url;
+                    captchaKey = data.key;
+                    
+                    const captchaHiddenInput = document.querySelector('input[name="captcha_0"]');
+                    if (captchaHiddenInput) {
+                        captchaHiddenInput.value = data.key;
+                    }
+                    
+                    const captchaInput = document.querySelector('input[name="captcha_1"]');
+                    if (captchaInput) {
+                        captchaInput.value = '';
+                        captchaInput.focus();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error refreshing captcha:', error);
+                });
+            };
+            
+            captchaImg.addEventListener('click', refreshCaptcha);
+            
+            const refreshButton = document.getElementById('refresh-captcha');
+            if (refreshButton) {
+                refreshButton.addEventListener('click', refreshCaptcha);
+            }
+        }
+        
+        const playAudioButton = document.getElementById('play-audio');
+        if (playAudioButton) {
+            playAudioButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (!captchaKey) {
+                    const captchaHiddenInput = document.querySelector('input[name="captcha_0"]');
+                    if (captchaHiddenInput) {
+                        captchaKey = captchaHiddenInput.value;
+                    }
+                }
+                
+                if (!captchaKey) {
+                    showCaptchaError("Could not determine captcha key for audio playback.");
+                    return;
+                }
+                
+                const audioUrl = `/captcha/audio/${captchaKey}.wav`;
+                
+                const audioContainer = document.createElement('div');
+                audioContainer.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                
+                const audioPlayerModal = document.createElement('div');
+                audioPlayerModal.className = 'bg-white dark:bg-gray-800 p-4 rounded-lg shadow-xl max-w-md w-full';
+                
+                audioPlayerModal.innerHTML = `
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Audio Captcha</h3>
+                        <button id="close-audio-modal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex justify-center mb-4">
+                        <audio controls autoplay class="w-full">
+                            <source src="${audioUrl}" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    <div class="text-center text-sm text-gray-600 dark:text-gray-400">
+                        Please enter the characters you hear in the captcha field.
+                    </div>
+                `;
+                
+                audioContainer.appendChild(audioPlayerModal);
+                document.body.appendChild(audioContainer);
+                
+                const audio = audioContainer.querySelector('audio');
+                audio.load();
+                audio.play();
+                
+                document.getElementById('close-audio-modal').addEventListener('click', function() {
+                    document.body.removeChild(audioContainer);
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}

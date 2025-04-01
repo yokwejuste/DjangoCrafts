@@ -1,0 +1,21 @@
+{% load i18n %}
+{% spaceless %}
+    <div class="captcha-container relative flex flex-col items-center md:items-start">
+        <div class="relative">
+            <img src="{{ image }}" alt="captcha" class="captcha border border-gray-300 rounded-md max-w-full h-auto" />
+            {% if audio %}
+                <div class="audio-player absolute bottom-2 right-2">
+                    <audio controls class="w-8 h-8">
+                        <source src="{{ audio }}" type="audio/wav">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endspaceless %}
+{% spaceless %}
+    {% for widget in widget.subwidgets %}
+        {% include widget.template_name %}
+    {% endfor %}
+{% endspaceless %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Home - reCAPTCHA Demo{% endblock %}
+
+{% block page_title %}reCAPTCHA Demo{% endblock %}
+
+{% block content %}
+<div class="flex flex-col space-y-6">
+    <a href="{% url 'contact' %}" class="btn-primary text-center">
+        Try reCAPTCHA v2 Checkbox
+    </a>
+    <a href="{% url 'invisible' %}" class="btn-primary text-center">
+        Try reCAPTCHA v2 Invisible
+    </a>
+    <a href="{% url 'v3' %}" class="btn-primary text-center">
+        Try reCAPTCHA v3
+    </a>
+    <a href="{% url 'django_captcha' %}" class="btn-primary text-center">
+        Try Django Simple Captcha
+    </a>
+</div>
+{% endblock %}
