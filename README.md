@@ -6,6 +6,7 @@ This repository contains various Django projects and tutorials to help you learn
 
 - [Projects](#projects)
   - [Django 2FA](#django-2fa)
+  - [Django SSO](#django_sso)
 - [Getting Started](#getting-started)
 - [Contributing](#contributing)
 - [Security](#security)
