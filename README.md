@@ -44,7 +44,7 @@ The application provides a complete authentication flow with a custom user model
 
 ### Django Passkeys
 
-A [Django-based web application](./django-passkeys/) that implements both traditional authentication (username/password) and passkey authentication using the WebAuthn API. Passkey authentication allows users to securely log in without passwords, using biometric or hardware-based authentication methods.
+A [Django-based web application](https://github.com/yokwejuste/django-passkeys) that implements both traditional authentication (username/password) and passkey authentication using the WebAuthn API. Passkey authentication allows users to securely log in without passwords, using biometric or hardware-based authentication methods.
 
 Key features include:
 - Traditional username/password registration and login
