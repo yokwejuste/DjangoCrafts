@@ -1,0 +1,3 @@
+[submodule "django-passkeys"]
+	path = django-passkeys
+	url = git@github.com:yokwejuste/django-passkeys.git
