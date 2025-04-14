@@ -28,6 +28,9 @@ For specific security concerns related to the packages used in these projects, p
 
 - Django: [Django Security](https://docs.djangoproject.com/en/stable/topics/security/)
 - Django Two-Factor Authentication: Refer to the documentation of the specific package used in the django2fa project
+- Django Passkeys: For WebAuthn and Passkey implementation, refer to [WebAuthn Documentation](https://webauthn.guide/) and [FIDO Alliance Guidelines](https://fidoalliance.org/specifications/)
+- Django reCAPTCHA: For integration of Google reCAPTCHA, refer to [Google reCAPTCHA Documentation](https://developers.google.com/recaptcha/docs/security)
+- Django SSO: For Single Sign-On implementation, refer to [OAuth 2.0 Security Best Practices](https://oauth.net/2/security-best-practices/) and [OpenID Connect Security](https://openid.net/specs/openid-connect-core-1_0.html#Security)
 
 ## Version Support
 
