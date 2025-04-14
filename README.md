@@ -8,6 +8,7 @@ This repository contains various Django projects and tutorials to help you learn
   - [Django 2FA](#django-2fa)
   - [Django SSO](#django_sso)
   - [Django 2FA with Google Authenticator](#django2fa)
+  - [Django Passkeys](#django_passkeys)
   - [Django ReCaptcha](#django_recaptcha)
 - [Getting Started](#getting-started)
 - [Contributing](#contributing)
