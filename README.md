@@ -10,6 +10,7 @@ This repository contains various Django projects and tutorials to help you learn
   - [Django 2FA with Google Authenticator](#django-2fa-with-google-authenticator)
   - [Django Passkeys](#django-passkeys)
   - [Django ReCaptcha](#django-recaptcha)
+  - [Device Fingerprinting](#device-fingerprinting)
 - [Getting Started](#getting-started)
 - [Contributing](#contributing)
 - [Security](#security)
@@ -62,6 +63,18 @@ A [comprehensive demonstration](./django_recaptcha/) of different CAPTCHA implem
 - Django Simple CAPTCHA - Self-hosted math challenge with audio support
 
 The implementation uses Django, django-recaptcha, django-simple-captcha, and Tailwind CSS for styling.
+
+### Device Fingerprinting
+
+A [Django-based device fingerprinting system](./device_fingerprinting/) that demonstrates how to identify and track unique devices accessing your web application. This project showcases:
+
+- Browser-based device fingerprinting implementation
+- Secure storage of device signatures
+- User session tracking and device change detection
+- Analytics dashboard for device statistics
+- Privacy-focused implementation with customizable tracking parameters
+
+The implementation provides a practical example of device fingerprinting for both security and analytics purposes, helping you understand how to identify suspicious login attempts and track user devices without relying on cookies.
 
 ## Getting Started
 

@@ -1,0 +1,12 @@
+asgiref==3.8.1
+certifi==2025.1.31
+charset-normalizer==3.4.1
+Django==5.2
+idna==3.10
+pip-chill==1.0.3
+psycopg2-binary==2.9.10
+requests==2.32.3
+setuptools==79.0.0
+sqlparse==0.5.3
+tzdata==2025.2
+urllib3==2.4.0
