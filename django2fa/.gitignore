@@ -3,3 +3,8 @@
 
 # python cache files
 \__pycache__
+
+
+# environmental variables 
+
+\.env
