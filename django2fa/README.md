@@ -99,7 +99,7 @@ For production, you may want to configure:
 Or use the admin interface at `/admin` with your superuser credentials.
 
 ## Project Structure
-
+ 
 ```
 django2fa/
 ├── accounts/               # Custom user app

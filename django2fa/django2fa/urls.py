@@ -7,3 +7,4 @@ urlpatterns = [
     path("", include(tf_urls)),
     path("", include("accounts.urls")),
 ]
+   
