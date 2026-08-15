@@ -1,3 +1,5 @@
+
+
 ![DjangoCrafts - 2FA With google authenticator](https://github.com/user-attachments/assets/a2d49ed9-279a-41b3-8112-544564efa4fa)
 
 This repository contains various Django projects and tutorials to help you learn and implement different Django features and functionalities.
@@ -91,7 +93,7 @@ If you want to clone only a specific project folder instead of the entire reposi
 
 2. Add the remote repository:
    ```bash
-   git remote add origin https://github.com/YOUR_USERNAME/Django-Crafts.git
+   git remote add origin https://github.com/YOUR_USERNAME/DjangoCrafts.git
    ```
 
 3. Enable sparse checkout:
