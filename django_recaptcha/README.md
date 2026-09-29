@@ -186,7 +186,7 @@ Please make sure your code follows the existing style and includes appropriate t
 
 ## 📄 License
 
-This project is licensed under the Creative Common License - see the [LICENSE](../LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
 
 ---
 
