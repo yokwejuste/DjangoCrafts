@@ -6,6 +6,7 @@ This repository contains various Django projects and tutorials to help you learn
 
 ## Table of Contents
 
+- [Documentation](#documentation)
 - [Projects](#projects)
   - [Django 2FA](#django-2fa)
   - [Django SSO](#django-sso)
@@ -19,6 +20,16 @@ This repository contains various Django projects and tutorials to help you learn
 - [Security](#security)
 - [Support](#support)
 - [License](#license)
+
+## Documentation
+
+The guides for every craft are published at **[crafts.yokwejuste.me](https://crafts.yokwejuste.me)**. Their source lives in the [`crafts-docs`](https://github.com/yokwejuste/crafts-docs) repository, included here as the [`crafts-docs/`](./crafts-docs) submodule. To edit the docs, clone with submodules:
+
+```bash
+git clone --recurse-submodules git@github.com:yokwejuste/DjangoCrafts.git
+# or, in an existing clone
+git submodule update --init crafts-docs
+```
 
 ## Projects
 
