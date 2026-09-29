@@ -1,0 +1,5 @@
+Django>=5.2,<6.1
+python-dotenv>=1.0
+celery>=5.5
+redis>=5.2
+amqp>=5.3
