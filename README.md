@@ -81,7 +81,7 @@ The implementation provides a practical example of device fingerprinting for bot
 
 ### Django Brokers (Valkey, Redis, RabbitMQ)
 
-A [Django + Celery project](./django_brokers/) that shows how to run background tasks through different message brokers and switch between them with one environment variable:
+A [Django + Celery project](./django_brokers/) that shows how to run background tasks through different message brokers and switch between them with a few environment variables:
 
 - Valkey, the open-source Redis fork, as broker, result backend and Django cache
 - Redis with the same setup

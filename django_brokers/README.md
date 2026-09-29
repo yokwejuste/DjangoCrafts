@@ -1,6 +1,6 @@
 # Django Brokers: Valkey, Redis, RabbitMQ and alternatives
 
-A Django project that shows how to plug a message broker into Django with [Celery](https://docs.celeryq.dev/), and how to swap brokers by changing one environment variable. It covers:
+A Django project that shows how to plug a message broker into Django with [Celery](https://docs.celeryq.dev/), and how to swap brokers by changing a few environment variables in `.env`. It covers:
 
 1. **Valkey**, the open-source (BSD) fork of Redis maintained by the Linux Foundation
 2. **Redis**
@@ -13,10 +13,12 @@ The same Valkey/Redis server can also be Django's cache backend, which the proje
 
 A broker is a queue that sits between your Django app and background workers. Django puts a message on the queue ("send this email", "build this report") and returns a response straight away. A Celery worker picks the message up and runs the work outside the request/response cycle.
 
-```
-Django view ──delay()──▶ Broker (Valkey / Redis / RabbitMQ) ──▶ Celery worker
-     ▲                                                              │
-     └───────────── result backend (Valkey / Redis) ◀───────────────┘
+```mermaid
+flowchart LR
+    A[Django view] -- "task.delay()" --> B[Broker<br/>Valkey / Redis / RabbitMQ]
+    B --> C[Celery worker]
+    C -- stores result --> D[Result backend<br/>Valkey / Redis]
+    D -- "AsyncResult(id)" --> A
 ```
 
 - **Broker**: carries task messages to workers.
@@ -27,20 +29,20 @@ Django view ──delay()──▶ Broker (Valkey / Redis / RabbitMQ) ──▶ 
 ```
 django_brokers/
 ├── brokers/
-│   ├── __init__.py        # loads the Celery app with Django
-│   ├── celery.py          # Celery app, reads CELERY_* settings
+│   ├── __init__.py
+│   ├── celery.py
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
 ├── jobs/
-│   ├── tasks.py           # add() and build_report() tasks
-│   ├── views.py           # enqueue, task status and health check views
+│   ├── tasks.py
+│   ├── views.py
 │   ├── urls.py
 │   └── tests.py
 ├── templates/
 │   ├── _base.html
 │   └── home.html
-├── docker-compose.yml     # valkey, redis and rabbitmq services (profiles)
+├── docker-compose.yml
 ├── manage.py
 ├── requirements.txt
 └── .env.example
