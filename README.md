@@ -13,6 +13,7 @@ This repository contains various Django projects and tutorials to help you learn
   - [Django Passkeys](#django-passkeys)
   - [Django ReCaptcha](#django-recaptcha)
   - [Device Fingerprinting](#device-fingerprinting)
+  - [Django Brokers (Valkey, Redis, RabbitMQ)](#django-brokers-valkey-redis-rabbitmq)
 - [Getting Started](#getting-started)
 - [Contributing](#contributing)
 - [Security](#security)
@@ -77,6 +78,17 @@ A [Django-based device fingerprinting system](./device_fingerprinting/) that dem
 - Privacy-focused implementation with customizable tracking parameters
 
 The implementation provides a practical example of device fingerprinting for both security and analytics purposes, helping you understand how to identify suspicious login attempts and track user devices without relying on cookies.
+
+### Django Brokers (Valkey, Redis, RabbitMQ)
+
+A [Django + Celery project](./django_brokers/) that shows how to run background tasks through different message brokers and switch between them with one environment variable:
+
+- Valkey, the open-source Redis fork, as broker, result backend and Django cache
+- Redis with the same setup
+- RabbitMQ 4 with durable quorum queues
+- Alternatives such as Amazon SQS, KeyDB, Dragonfly and Django's built-in Tasks framework
+
+A Docker Compose file starts each broker, and a small dashboard enqueues tasks and shows their progress.
 
 ## Getting Started
 

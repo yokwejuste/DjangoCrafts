@@ -1,0 +1,19 @@
+services:
+  redis:
+    image: redis:8-alpine
+    profiles: ["redis"]
+    ports:
+      - "6379:6379"
+
+  valkey:
+    image: valkey/valkey:8-alpine
+    profiles: ["valkey"]
+    ports:
+      - "6380:6379"
+
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    profiles: ["rabbitmq"]
+    ports:
+      - "5672:5672"
+      - "15672:15672"

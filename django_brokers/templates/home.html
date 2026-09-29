@@ -1,0 +1,74 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<div class="grid gap-6 md:grid-cols-3">
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-sm font-semibold text-gray-500 uppercase">Broker</h2>
+        <p class="mt-2 font-mono text-sm break-all">{{ broker_url }}</p>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-sm font-semibold text-gray-500 uppercase">Result backend</h2>
+        <p class="mt-2 font-mono text-sm break-all">{{ result_backend }}</p>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-sm font-semibold text-gray-500 uppercase">Cache ({{ cache_backend }})</h2>
+        <p class="mt-2 text-sm">This page was viewed <span class="font-bold">{{ page_views }}</span> times.</p>
+    </div>
+</div>
+
+<div class="bg-white rounded-lg shadow p-6 mt-6">
+    <h2 class="text-xl font-bold mb-4">Send a task through the broker</h2>
+    <form method="post" action="{% url 'enqueue' %}" class="flex gap-4">
+        {% csrf_token %}
+        <button name="kind" value="add" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md">add(2, 3)</button>
+        <button name="kind" value="report" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md">build_report (5s)</button>
+    </form>
+
+    <table class="w-full mt-6 text-sm">
+        <thead>
+            <tr class="text-left text-gray-500 border-b">
+                <th class="py-2">Task id</th>
+                <th class="py-2">State</th>
+                <th class="py-2">Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task_id in task_ids %}
+            <tr class="border-b" data-task-id="{{ task_id }}">
+                <td class="py-2 font-mono">{{ task_id|truncatechars:14 }}</td>
+                <td class="py-2 state">…</td>
+                <td class="py-2 result font-mono"></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="py-4 text-gray-500">No tasks yet. Start a worker, then click a button.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const rows = document.querySelectorAll('[data-task-id]');
+
+    async function refresh() {
+        for (const row of rows) {
+            const response = await fetch(`/tasks/${row.dataset.taskId}/`);
+            const data = await response.json();
+            row.querySelector('.state').textContent = data.state;
+            if (data.meta) {
+                row.querySelector('.result').textContent = `${data.meta.done}/${data.meta.total}`;
+            } else if ('result' in data) {
+                row.querySelector('.result').textContent = JSON.stringify(data.result);
+            } else if (data.error) {
+                row.querySelector('.result').textContent = data.error;
+            }
+        }
+    }
+
+    if (rows.length) {
+        refresh();
+        setInterval(refresh, 1000);
+    }
+</script>
+{% endblock %}
