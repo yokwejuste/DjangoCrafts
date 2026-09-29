@@ -127,4 +127,4 @@ Need help? Check out our [SUPPORT.md](SUPPORT.md) document for assistance option
 
 ## License
 
-This project is licensed under the terms specified in the [LICENSE](LICENSE) file.
+This project is licensed under the [MIT License](LICENSE).
